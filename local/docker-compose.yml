@@ -1,0 +1,50 @@
+version: '3'
+services:
+
+  api:
+    build: ../../api
+    ports:
+      - "8080:8080"
+    environment:
+
+      PORT: 8080
+      DB: toptal
+      DBUSER: toptal
+      DBPASS: mysecretpassword
+      DBHOST: db.toptal.me
+      DBPORT: 5432
+
+    networks:
+      mynetwork:
+        aliases:
+          - api.toptal.me
+  
+  web:
+    build: ../../web
+    ports:
+      - "80:80"
+    environment:
+      PORT: 80
+      API_HOST: http://api.toptal.me:8080
+    networks:
+      mynetwork:
+        aliases:
+          - web.toptal.me
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: 'mysecretpassword'
+      POSTGRES_USER: toptal
+      POSTGRES_DB: toptal
+    ports:
+      - "5432:5432"
+    networks:
+      mynetwork:
+        aliases:
+          - db.toptal.me
+
+networks:
+  mynetwork:
+    driver: bridge
+  
