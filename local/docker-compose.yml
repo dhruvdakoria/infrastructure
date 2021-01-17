@@ -4,10 +4,10 @@ services:
   api:
     build: ../../api
     ports:
-      - "8080:8080"
+      - "8000:8000"
     environment:
 
-      PORT: 8080
+      PORT: 8000
       DB: toptal
       DBUSER: toptal
       DBPASS: mysecretpassword
@@ -25,7 +25,7 @@ services:
       - "80:80"
     environment:
       PORT: 80
-      API_HOST: http://api.toptal.me:8080
+      API_HOST: http://api.toptal.me:8000
     networks:
       mynetwork:
         aliases:

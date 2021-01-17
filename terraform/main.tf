@@ -115,7 +115,7 @@ module "cicd_web" {
   github_token = "${var.github_token}"
   github_owner = "${var.github_owner}"
   github_repo = "web"
-  github_branch = "master"
+  github_branch = "main"
   depends_on = [module.web-service]
 }
 
@@ -133,6 +133,6 @@ module "cicd_api" {
   github_token = "${var.github_token}"
   github_owner = "${var.github_owner}"
   github_repo = "api"
-  github_branch = "master"
+  github_branch = "main"
   depends_on = [module.api-service]
 }
