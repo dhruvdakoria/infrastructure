@@ -1,4 +1,4 @@
-resource "aws_ecs_service" "total_api" {
+resource "aws_ecs_service" "api" {
   name            = "${var.name}-api"
   task_definition = aws_ecs_task_definition.api.id
   cluster         = var.aws_ecs_cluster_main_arn

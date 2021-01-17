@@ -13,7 +13,7 @@ resource "aws_lb" "api_alb" {
 resource "aws_lb_target_group" "api" {
   name  = "${var.name}-api-tg"
 
-  port        = 8080
+  port        = 8000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
   target_type = "instance"

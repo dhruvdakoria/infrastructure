@@ -1,8 +1,8 @@
 terraform {  
     backend "s3" {
-        bucket         = "dhruv-toptal-terrastate"
+        bucket         = "dhruv-toptal-terraformstate"
         key            = "terraform.tfstate"    
         region         = "us-east-1"
-        dynamodb_table = "toptal-terrastate-db"
+        dynamodb_table = "dhruv-toptal-terraformstate-db"
     }
 }

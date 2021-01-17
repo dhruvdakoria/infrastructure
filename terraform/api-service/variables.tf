@@ -23,7 +23,7 @@ variable "aws_iam_role_task_role_arn" {
 }
 
 variable "container_api_port" {
-  default = "8080"
+  default = "8000"
 }
 
 variable "memory_reserv" {

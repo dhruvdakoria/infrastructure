@@ -11,7 +11,7 @@ node-exporter:
 cadvisor-exporter:
    image: google/cadvisor
    ports:
-      - "9200:8080"
+      - "9200:8000"
    privileged: true
    volumes:
       - /:/rootfs:ro
