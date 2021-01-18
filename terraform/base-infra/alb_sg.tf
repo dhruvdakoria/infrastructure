@@ -1,5 +1,5 @@
 resource "aws_security_group" "alb" {
-  name   = "${var.name}-allow-http"
+  name   = "${var.name}-allow-http-alb"
   vpc_id = aws_vpc.main.id
 
   ingress {
@@ -17,6 +17,6 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name = "${var.name}-allow-http"
+    Name = "${var.name}-allow-http-alb"
   }
 }

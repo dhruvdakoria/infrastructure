@@ -76,7 +76,7 @@ resource "aws_security_group" "monitoring_vm_internal" {
     from_port   = 0
     protocol    = "-1"
     to_port     = 0
-    security_groups = ["${var.aws_security_group_ecs_id}"]
+    security_groups = [var.aws_security_group_ecs_id]
   }
 
   egress {

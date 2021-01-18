@@ -30,7 +30,7 @@ resource "aws_launch_configuration" "main" {
     create_before_destroy = true
   }
 
-  security_groups             = ["${aws_security_group.ecs.id}"]
+  security_groups             = [aws_security_group.ecs.id]
   associate_public_ip_address = "true"
   key_name                    = var.ecs_key_pair_name
   user_data                   = file("${path.module}/user_data.sh")

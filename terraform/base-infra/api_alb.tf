@@ -1,10 +1,40 @@
+data "aws_elb_service_account" "main" {}
+
+data "aws_iam_policy_document" "app-logs" {
+  statement {
+    actions = [
+      "s3:PutObject",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_elb_service_account.main.arn]
+    }
+
+    resources = [
+      "arn:aws:s3:::${var.name}-elb-logs-app/*",
+    ]
+  }
+}
+
+resource "aws_s3_bucket" "app-logs" {
+  bucket        = "${var.name}-elb-logs-app"
+  acl           = "private"
+  policy        = data.aws_iam_policy_document.app-logs.json
+  force_destroy = true
+}
+
+
 resource "aws_lb" "api_alb" {
   name               = "${var.name}-service-api-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_security_group.alb.id}"]
+  security_groups    = [aws_security_group.alb.id]
   subnets            = aws_subnet.public.*.id
-
+  access_logs {
+    bucket   = aws_s3_bucket.app-logs.id
+    enabled = true
+  }
   tags = {
     Name = "${var.name}-service-api-alb"
   }

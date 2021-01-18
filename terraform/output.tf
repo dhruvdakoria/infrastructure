@@ -1,11 +1,11 @@
 
 output "alb_url_api" {
-  value       = module.base_infra.aws_lb_api_dns_name
+  value       = module.base-infra.aws_lb_api_dns_name
   description = "DNS Endpoint of the API"
 }
 
 output "alb_url_web" {
-  value       = module.base_infra.aws_lb_web_dns_name
+  value       = module.base-infra.aws_lb_web_dns_name
   description = "DNS Endpoint of the WEB"
 }
 
@@ -15,12 +15,12 @@ output "ec2_url" {
 }
 
 output "database_url" {
-  value       = module.db.db_url
+  value       = module.database.db_url
   description = "database url"
 }
 
 
 output "cdn_url" {
-  value       = module.base_infra.cdn_url
+  value       = module.base-infra.cdn_domain_name
   description = "database url"
 }

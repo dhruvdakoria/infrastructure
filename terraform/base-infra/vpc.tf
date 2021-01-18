@@ -1,18 +1,18 @@
 locals {
   public_subnets = {
-    "${var.region}a" = "10.10.101.0/24"
-    "${var.region}b" = "10.10.102.0/24"
-    "${var.region}c" = "10.10.103.0/24"
+    "${var.region}a" = "10.0.1.0/24"
+    "${var.region}b" = "10.0.2.0/24"
+    "${var.region}c" = "10.0.3.0/24"
   }
   private_subnets = {
-    "${var.region}a" = "10.10.201.0/24"
-    "${var.region}b" = "10.10.202.0/24"
-    "${var.region}c" = "10.10.203.0/24"
+    "${var.region}a" = "10.0.4.0/24"
+    "${var.region}b" = "10.0.5.0/24"
+    "${var.region}c" = "10.0.6.0/24"
   }
 }
 
 resource "aws_vpc" "main" {
-  cidr_block = "10.10.0.0/16"
+  cidr_block = "10.0.0.0/16"
 
   enable_dns_support   = true
   enable_dns_hostnames = true

@@ -156,10 +156,10 @@ resource "aws_codepipeline" "toptal" {
       output_artifacts = ["SourceArtifact"]
 
       configuration = {
-        OAuthToken = "${var.github_token}"
-        Owner = "${var.github_owner}"
-        Repo = "${var.github_repo}"
-        Branch = "${var.github_branch}"
+        OAuthToken = var.github_token
+        Owner = var.github_owner
+        Repo = var.github_repo
+        Branch = var.github_branch
       }
     }
   }

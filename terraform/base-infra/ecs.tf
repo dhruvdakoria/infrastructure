@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "task_role" {
 
     actions = ["ecs:DescribeClusters"]
 
-    resources = ["${aws_ecs_cluster.main.arn}"]
+    resources = [aws_ecs_cluster.main.arn]
   }
 }
 
@@ -73,7 +73,7 @@ resource "aws_security_group" "ecs" {
     from_port       = 0
     protocol        = "-1"
     to_port         = 0
-    security_groups = ["${aws_security_group.alb.id}", "${var.aws_security_group_monitoring_vm_id}"]
+    security_groups = [aws_security_group.alb.id, var.aws_security_group_monitoring_vm_id]
   }
 
   egress {

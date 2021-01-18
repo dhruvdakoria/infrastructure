@@ -13,4 +13,3 @@ variable "ecs_key_pair_name" {
 variable "aws_security_group_monitoring_vm_id" {
   default = ""
 }
-

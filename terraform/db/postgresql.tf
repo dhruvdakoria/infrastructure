@@ -54,24 +54,17 @@ resource "aws_db_parameter_group" "default" {
 ## Security group resources
 ########################
 resource "aws_security_group" "rds" {
-  name   = "${var.name}-allow-rds"
+  name   = "${var.name}-rds-sg"
   vpc_id = var.vpc_id
 
   ingress {
-    from_port   = 0
-    protocol    = "-1"
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    protocol    = "-1"
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = var.database_port
+    protocol    = "tcp"
+    to_port     = var.database_port
+    cidr_blocks = [var.aws_subnet_private_1_id, var.aws_subnet_private_2_id, var.aws_subnet_private_3_id]
   }
 
   tags = {
-    Name = "${var.name}-allow-rds"
+    Name = "${var.name}-rds-sg"
   }
 }

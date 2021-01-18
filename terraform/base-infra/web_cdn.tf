@@ -1,3 +1,15 @@
+module "log_storage" {
+  source                   = "git::https://github.com/cloudposse/terraform-aws-s3-log-storage.git"
+  name                     = "external-logs"
+  stage                    = "prd"
+  namespace                = "toptal"
+  acl                      = "log-delivery-write"
+  standard_transition_days = 30
+  glacier_transition_days  = 60
+  expiration_days          = 90
+  force_destroy            = true
+}
+
 resource "aws_cloudfront_distribution" "web_cdn" {
   origin {
     domain_name = aws_lb.web_alb.dns_name
@@ -19,6 +31,12 @@ resource "aws_cloudfront_distribution" "web_cdn" {
   default_root_object = ""
 
   aliases = []
+
+  logging_config {
+    include_cookies = false
+    bucket          = module.log_storage.bucket_domain_name
+    prefix          = "cdn"
+  }
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -55,6 +73,6 @@ resource "aws_cloudfront_distribution" "web_cdn" {
   }
 }
 
-output "cdn_url" {
+output "cdn_domain_name" {
   value = aws_cloudfront_distribution.web_cdn.domain_name
 }

@@ -33,6 +33,9 @@ variable "github_owner" {
   description = "Github owner accout where repos are"
 }
 
+variable "github_branch" {
+  default = "master"
+}
 
 #database related variables
 variable "database_password" {
@@ -43,7 +46,7 @@ variable "database_username" {
   default = "toptal"
 }
 variable "database_name" {
-  default = "toptal-db"
+  default = "toptaldb"
 }
 variable "database_port" {
   default = "5432"
