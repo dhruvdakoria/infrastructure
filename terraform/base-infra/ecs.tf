@@ -65,6 +65,10 @@ resource "aws_ecs_cluster" "main" {
   name = "ecs-cluster"
 }
 
+resource "aws_ecs_cluster" "monitoring" {
+  name = "ecs-cluster-monitoring"
+}
+
 resource "aws_security_group" "ecs" {
   name   = "${var.name}-allow-ecs"
   vpc_id = aws_vpc.main.id
@@ -73,7 +77,8 @@ resource "aws_security_group" "ecs" {
     from_port       = 0
     protocol        = "-1"
     to_port         = 0
-    security_groups = [aws_security_group.alb.id, var.aws_security_group_monitoring_vm_id]
+    # security_groups = [aws_security_group.alb.id, var.aws_security_group_monitoring_vm_id]
+    security_groups = [aws_security_group.alb.id]
   }
 
   egress {

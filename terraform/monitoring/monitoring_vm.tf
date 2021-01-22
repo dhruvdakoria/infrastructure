@@ -30,6 +30,10 @@ data "aws_iam_policy" "ec2readyonlyaccess" {
   arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
 }
 
+data "aws_iam_policy" "cloudwatch_full_access" {
+  arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+}
+
 resource "aws_iam_role" "monitoring_role" {
   name               = "monitoring_ec2ReadRole"
   assume_role_policy = data.aws_iam_policy_document.assume_by_ec2.json
@@ -38,6 +42,11 @@ resource "aws_iam_role" "monitoring_role" {
 resource "aws_iam_role_policy_attachment" "test-attach" {
   role       = aws_iam_role.monitoring_role.name
   policy_arn = data.aws_iam_policy.ec2readyonlyaccess.arn
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch-attach" {
+  role       = aws_iam_role.monitoring_role.name
+  policy_arn = data.aws_iam_policy.cloudwatch_full_access.arn
 }
 
 resource "aws_iam_instance_profile" "monitoring_profile" {

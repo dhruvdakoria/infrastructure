@@ -194,7 +194,7 @@ resource "aws_codepipeline" "toptal" {
       version = "1"
 
       configuration = {
-        ClusterName = "ecs-cluster"
+        ClusterName = var.cluster
         ServiceName = "${var.name}-${var.tier}"
         FileName = "imagedefinitions.json"
       }

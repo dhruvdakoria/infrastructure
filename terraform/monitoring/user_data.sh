@@ -11,11 +11,11 @@ global:
 scrape_configs:
   - job_name: ecs_CAAdvisor
     ec2_sd_configs:
-      - region: eu-central-1
+      - region: us-east-1
         port: 9200
   - job_name: ecs_NodeExporter
     ec2_sd_configs:
-      - region: eu-central-1
+      - region: us-east-1
         port: 9100
 EOF
 cat <<EOF >/home/ec2-user/docker-compose.yml

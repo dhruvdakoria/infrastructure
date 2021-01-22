@@ -22,3 +22,6 @@
   variable "github_branch" {
 
   }
+  variable "cluster" {
+
+  }

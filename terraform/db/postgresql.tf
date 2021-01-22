@@ -1,19 +1,4 @@
-#data "aws_subnet_ids" "private" {
-#  vpc_id = var.vpc_id
-#    filter {
-#      name = "tag:Name"
-#      values = ["${var.name}-private"]
-#    }
-#}
-#
-#data "aws_subnet" "private" {
-#  count = length(data.aws_subnet_ids.private.ids)
-#  id    = tolist(data.aws_subnet_ids.private.ids)[count.index]
-#}
-#
-########################
-## DB Instance
-########################
+# Postgres DB Instance, parameter & subnet group, SG for DB
 resource "aws_db_instance" "postgresql" {
   allocated_storage          = var.allocated_storage
   engine                     = "postgres"
@@ -50,9 +35,6 @@ resource "aws_db_parameter_group" "default" {
   family = "postgres9.6"
 }
 
-########################
-## Security group resources
-########################
 resource "aws_security_group" "rds" {
   name   = "${var.name}-rds-sg"
   vpc_id = var.vpc_id
@@ -61,7 +43,7 @@ resource "aws_security_group" "rds" {
     from_port   = var.database_port
     protocol    = "tcp"
     to_port     = var.database_port
-    cidr_blocks = [var.aws_subnet_private_1_id, var.aws_subnet_private_2_id, var.aws_subnet_private_3_id]
+    cidr_blocks = ["10.0.4.0/24","10.0.5.0/24","10.0.6.0/24"] #private subnet CIDRs
   }
 
   tags = {

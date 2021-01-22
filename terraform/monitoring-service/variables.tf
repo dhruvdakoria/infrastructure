@@ -10,7 +10,7 @@ variable "aws_ecs_cluster_main_arn" {
   default = ""
 }
 
-variable "aws_lb_target_group_api_arn" {
+variable "aws_lb_target_group_monitoring_arn" {
   default = ""
 }
 
@@ -22,8 +22,8 @@ variable "aws_iam_role_task_role_arn" {
   default = ""
 }
 
-variable "container_api_port" {
-  default = "8000"
+variable "container_monitoring_port" {
+  default = "1337"
 }
 
 variable "memory_reserv" {
@@ -34,16 +34,6 @@ variable "aws_account_id" {
   default = ""
 }
 
-variable "database_url" {
+variable "aws_lb_api_dns_name" {
   default = ""
-}
-
-variable "database_name" {}
-
-variable "database_password" {}
-
-variable "database_username" {}
-
-variable "database_port" {
-  default = "5432"
 }

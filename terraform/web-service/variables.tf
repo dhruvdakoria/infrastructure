@@ -37,7 +37,3 @@ variable "aws_account_id" {
 variable "aws_lb_api_dns_name" {
   default = ""
 }
-
-variable "loki_ip" {
-  default = ""
-}

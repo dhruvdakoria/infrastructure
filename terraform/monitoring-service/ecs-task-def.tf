@@ -1,5 +1,5 @@
-resource "aws_ecs_task_definition" "api" {
-  family                   = "${var.name}-api"
+resource "aws_ecs_task_definition" "monitoring" {
+  family                   = "${var.name}-monitoring"
   execution_role_arn       = var.aws_iam_role_execution_role_arn
   task_role_arn            = var.aws_iam_role_task_role_arn
   network_mode             = "bridge"
@@ -11,43 +11,35 @@ resource "aws_ecs_task_definition" "api" {
         {
           "hostPort": 0,
           "protocol": "tcp",
-          "containerPort": ${var.container_api_port}
+          "containerPort": ${var.container_monitoring_port}
         }
       ],
       "environment": [
         {
           "name": "PORT",
-          "value": "${var.container_api_port}"
+          "value": "${var.container_monitoring_port}"
         },
         {
-          "name": "DB",
-          "value": "${var.database_name}"
+          "name": "AWS_ACCESS_KEY_ID",
+          "value": "AKIAWPCZPBGEUXH5X26J"
         },
         {
-          "name": "DBUSER",
-          "value": "${var.database_username}"
+          "name": "AWS_SECRET_ACCESS_KEY",
+          "value": "7YgDvTVN20ET7LcluHKnBLfiodr1WzXZHbDh5CFw"
         },
         {
-          "name": "DBPASS",
-          "value": "${var.database_password}"
-        },
-        {
-          "name": "DBHOST",
-          "value": "${var.database_url}"
-        },
-        {
-          "name": "DBPORT",
-          "value": "5432"
+          "name" : "AWS_REGION",
+          "value": "${var.region}"
         }
       ],
       "memoryReservation" : ${var.memory_reserv},
-      "image": "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}-api:latest",
-      "name": "${var.name}-api",
+      "image": "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}-monitoring:latest",
+      "name": "${var.name}-monitoring",
       "logConfiguration": {
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/${var.name}-api",
+          "awslogs-group": "/ecs/${var.name}-monitoring",
           "awslogs-region": "${var.region}",
           "awslogs-stream-prefix": "ecs"
         }

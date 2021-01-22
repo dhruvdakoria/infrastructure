@@ -3,21 +3,21 @@ module "base-infra" {
   source = "./base-infra"
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
-  aws_security_group_monitoring_vm_id = module.monitoring.aws_security_group_monitoring_vm_id
+  # aws_security_group_monitoring_vm_id = module.monitoring.aws_security_group_monitoring_vm_id
   ecs_key_pair_name=var.key_pair_name
 }
 
 # Monitoring for EC2  
-module "monitoring" {
- source = "./monitoring"
- aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
- aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
- aws_ecs_cluster_main_arn = module.base-infra.aws_ecs_cluster_main_arn
- aws_subnet_public_id = module.base-infra.aws_subnet_public_id
- vpc_id = module.base-infra.aws_vpc_main_id
- aws_security_group_ecs_id = module.base-infra.aws_security_group_ecs_id
- ecs_key_pair_name=var.key_pair_name
-}
+# module "monitoring" {
+#  source = "./monitoring"
+#  aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
+#  aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
+#  aws_ecs_cluster_main_arn = module.base-infra.aws_ecs_cluster_main_arn
+#  aws_subnet_public_id = module.base-infra.aws_subnet_public_id
+#  vpc_id = module.base-infra.aws_vpc_main_id
+#  aws_security_group_ecs_id = module.base-infra.aws_security_group_ecs_id
+#  ecs_key_pair_name=var.key_pair_name
+# }
 
 # Web Service Deployment
 module "web-service" {
@@ -29,7 +29,23 @@ module "web-service" {
   aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
   aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
   aws_lb_api_dns_name = module.base-infra.aws_lb_api_dns_name
-  loki_ip = module.monitoring.ec2_private_ip
+  # loki_ip = module.monitoring.ec2_private_ip
+  aws_account_id= var.aws_account_id
+  depends_on = [module.base-infra]
+  
+}
+
+# Monitoring Service Deployment
+module "monitoring-service" {
+  source = "./monitoring-service"
+  name = "${var.project_identifier}-${var.stage}"
+  region = var.region
+  aws_ecs_cluster_main_arn = module.base-infra.aws_ecs_cluster_monitoring_arn
+  aws_lb_target_group_monitoring_arn = module.base-infra.aws_lb_target_group_monitoring_arn
+  aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
+  aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
+  aws_lb_api_dns_name = module.base-infra.aws_lb_api_dns_name
+  # loki_ip = module.monitoring.ec2_private_ip
   aws_account_id= var.aws_account_id
   depends_on = [module.base-infra]
   
@@ -45,7 +61,7 @@ module "api-service" {
   aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
   aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
   aws_account_id= var.aws_account_id
-  loki_ip = module.monitoring.ec2_private_ip
+  # loki_ip = module.monitoring.ec2_private_ip
   database_url= module.database.db_url
   database_name = var.database_name 
   database_username = var.database_username
@@ -85,6 +101,7 @@ module "cicd_web" {
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
   tier = "web"
+  cluster = "ecs-cluster-monitoring"
   aws_account_id=var.aws_account_id
   github_token = var.github_token
   github_owner = var.github_owner
@@ -99,10 +116,26 @@ module "cicd_api" {
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
   tier = "api"
+  cluster = "ecs-cluster-monitoring"
   aws_account_id=var.aws_account_id
   github_token = var.github_token
   github_owner = var.github_owner
   github_repo = "dhruv-toptal-api"
   github_branch = var.github_branch
   depends_on = [module.api-service]
+}
+
+#CI/CD Pipeline Deployment - Monitoring
+module "cicd_monitoring" {
+  source = "./cicd"
+  name = "${var.project_identifier}-${var.stage}"
+  region = var.region
+  tier = "monitoring"
+  cluster = "ecs-cluster-monitoring"
+  aws_account_id=var.aws_account_id
+  github_token = var.github_token
+  github_owner = var.github_owner
+  github_repo = "dhruv-toptal-monitoring"
+  github_branch = var.github_branch
+  depends_on = [module.monitoring-service]
 }

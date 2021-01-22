@@ -6,17 +6,6 @@ resource "aws_ecs_task_definition" "web" {
   requires_compatibilities = ["EC2"]
   container_definitions    = <<DEFINITION
 [
-    {
-      "memoryReservation" : 50,
-      "image": "grafana/fluent-bit-plugin-loki:1.6.0-amd64",
-      "name": "log_router",
-      "firelensConfiguration": {
-          "type": "fluentbit",
-          "options": {
-              "enable-ecs-log-metadata": "true"
-          }
-      }
-    },
    {
       "portMappings": [
         {
@@ -39,15 +28,13 @@ resource "aws_ecs_task_definition" "web" {
       "image": "${var.aws_account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.name}-web:latest",
       "name": "${var.name}-web",
       "logConfiguration": {
-          "logDriver": "awsfirelens",
-          "options": {
-              "Name": "loki",
-              "Url": "http://${var.loki_ip}:3100/loki/api/v1/push",
-              "Labels": "{job=\"firelens\"}",
-              "RemoveKeys": "container_id,ecs_task_arn",
-              "LabelKeys": "container_name,ecs_task_definition,source,ecs_cluster",
-              "LineFormat": "key_value"
-          }
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/${var.name}-web",
+          "awslogs-region": "${var.region}",
+          "awslogs-stream-prefix": "ecs"
+        }
       }
     }
 ]
