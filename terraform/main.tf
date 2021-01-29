@@ -3,25 +3,15 @@ module "base-infra" {
   source = "./base-infra"
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
-  # aws_security_group_monitoring_vm_id = module.monitoring.aws_security_group_monitoring_vm_id
   ecs_key_pair_name=var.key_pair_name
+  acm_certificate_arn="arn:aws:acm:us-east-1:444716747145:certificate/192d9549-929f-44f6-911c-19bb4c3ace4b"
+  r53_domain_name="dhruv-toptal-project.cf"
+  r53_hosted_zone_id="Z01341672GWBA3T2L5CX8"
 }
-
-# Monitoring for EC2  
-# module "monitoring" {
-#  source = "./monitoring"
-#  aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
-#  aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
-#  aws_ecs_cluster_main_arn = module.base-infra.aws_ecs_cluster_main_arn
-#  aws_subnet_public_id = module.base-infra.aws_subnet_public_id
-#  vpc_id = module.base-infra.aws_vpc_main_id
-#  aws_security_group_ecs_id = module.base-infra.aws_security_group_ecs_id
-#  ecs_key_pair_name=var.key_pair_name
-# }
 
 # Web Service Deployment
 module "web-service" {
-  source = "./web-service"
+  source = "./ecs-services/web-service"
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
   aws_ecs_cluster_main_arn = module.base-infra.aws_ecs_cluster_main_arn
@@ -29,7 +19,6 @@ module "web-service" {
   aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
   aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
   aws_lb_api_dns_name = module.base-infra.aws_lb_api_dns_name
-  # loki_ip = module.monitoring.ec2_private_ip
   aws_account_id= var.aws_account_id
   depends_on = [module.base-infra]
   
@@ -37,7 +26,7 @@ module "web-service" {
 
 # Monitoring Service Deployment
 module "monitoring-service" {
-  source = "./monitoring-service"
+  source = "./ecs-services/monitoring-service"
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
   aws_ecs_cluster_main_arn = module.base-infra.aws_ecs_cluster_monitoring_arn
@@ -45,7 +34,6 @@ module "monitoring-service" {
   aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
   aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
   aws_lb_api_dns_name = module.base-infra.aws_lb_api_dns_name
-  # loki_ip = module.monitoring.ec2_private_ip
   aws_account_id= var.aws_account_id
   depends_on = [module.base-infra]
   
@@ -53,7 +41,7 @@ module "monitoring-service" {
 
 #API Service Deployment
 module "api-service" {
-  source = "./api-service"
+  source = "./ecs-services/api-service"
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
   aws_ecs_cluster_main_arn = module.base-infra.aws_ecs_cluster_main_arn
@@ -61,7 +49,6 @@ module "api-service" {
   aws_iam_role_execution_role_arn = module.base-infra.aws_iam_role_execution_role_arn
   aws_iam_role_task_role_arn = module.base-infra.aws_iam_role_task_role_arn
   aws_account_id= var.aws_account_id
-  # loki_ip = module.monitoring.ec2_private_ip
   database_url= module.database.db_url
   database_name = var.database_name 
   database_username = var.database_username
@@ -87,7 +74,7 @@ module "database" {
   database_port     = var.database_port
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
-  backup_retention_period = 0
+  backup_retention_period = 7
   snapshot_identifier = "toptal-snapshot"
   aws_subnet_private_1_id = module.base-infra.aws_subnet_private_1_id
   aws_subnet_private_2_id = module.base-infra.aws_subnet_private_2_id
@@ -101,7 +88,7 @@ module "cicd_web" {
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
   tier = "web"
-  cluster = "ecs-cluster-monitoring"
+  cluster = "ecs-cluster"
   aws_account_id=var.aws_account_id
   github_token = var.github_token
   github_owner = var.github_owner
@@ -116,7 +103,7 @@ module "cicd_api" {
   name = "${var.project_identifier}-${var.stage}"
   region = var.region
   tier = "api"
-  cluster = "ecs-cluster-monitoring"
+  cluster = "ecs-cluster"
   aws_account_id=var.aws_account_id
   github_token = var.github_token
   github_owner = var.github_owner

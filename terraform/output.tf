@@ -14,11 +14,6 @@ output "alb_url_monitoring" {
   description = "DNS Endpoint of the Monitoring Service"
 }
 
-# output "ec2_url" {
-#   value       = module.monitoring.ec2_public_ip
-#   description = "IP of the EC2 instance"
-# }
-
 output "database_url" {
   value       = module.database.db_url
   description = "database url"

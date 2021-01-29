@@ -16,7 +16,8 @@ data "aws_ami" "latest-ecs" {
 
 resource "aws_launch_configuration" "main" {
   name                 = "ECS-Instance-${var.name}"
-  image_id             = data.aws_ami.latest-ecs.id
+  # image_id             = data.aws_ami.latest-ecs.id
+  image_id             = "ami-005b753c07ecef59f"
   instance_type        = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.ecs-instance-profile.id
 
@@ -38,7 +39,8 @@ resource "aws_launch_configuration" "main" {
 
 resource "aws_launch_configuration" "monitoring" {
   name                 = "Monitoring-${var.name}"
-  image_id             = data.aws_ami.latest-ecs.id
+  # image_id             = data.aws_ami.latest-ecs.id
+  image_id             = "ami-005b753c07ecef59f"
   instance_type        = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.ecs-instance-profile.id
 

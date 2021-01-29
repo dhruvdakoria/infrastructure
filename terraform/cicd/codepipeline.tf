@@ -160,6 +160,7 @@ resource "aws_codepipeline" "toptal" {
         Owner = var.github_owner
         Repo = var.github_repo
         Branch = var.github_branch
+        PollForSourceChanges = false
       }
     }
   }

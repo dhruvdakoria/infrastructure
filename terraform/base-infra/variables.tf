@@ -10,6 +10,14 @@ variable "ecs_key_pair_name" {
   description = "Key pair name"
 }
 
-variable "aws_security_group_monitoring_vm_id" {
-  default = ""
+variable "acm_certificate_arn" {
+  description = "ACM Certificate ARN"
+}
+
+variable "r53_domain_name" {
+  description = "Domain Name used for creating R53 hosted zone"
+}
+
+variable "r53_hosted_zone_id" {
+  description = "Hosted Zone ID for R53"
 }

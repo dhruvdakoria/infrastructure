@@ -10,6 +10,30 @@ module "log_storage" {
   force_destroy            = true
 }
 
+module "r53_alias_record" {
+  source          = "git::https://github.com/cloudposse/terraform-aws-route53-alias.git?ref=master"
+  aliases         = ["www.${var.r53_domain_name}", var.r53_domain_name]
+  parent_zone_id  = var.r53_hosted_zone_id
+  target_dns_name = aws_cloudfront_distribution.web_cdn.domain_name
+  target_zone_id  = "Z2FDTNDATAQYW2"      # This is always the hosted zone ID when you create an alias record that routes traffic to a CloudFront distribution. 
+}
+
+module "r53_alias_record_monitoring" {
+  source          = "git::https://github.com/cloudposse/terraform-aws-route53-alias.git?ref=master"
+  aliases         = ["monitoring.${var.r53_domain_name}"]
+  parent_zone_id  = var.r53_hosted_zone_id
+  target_dns_name = aws_lb.monitoring_alb.dns_name
+  target_zone_id  = aws_lb.monitoring_alb.zone_id 
+}
+
+module "r53_alias_record_api" {
+  source          = "git::https://github.com/cloudposse/terraform-aws-route53-alias.git?ref=master"
+  aliases         = ["api.${var.r53_domain_name}"]
+  parent_zone_id  = var.r53_hosted_zone_id
+  target_dns_name = aws_lb.api_alb.dns_name
+  target_zone_id  = aws_lb.api_alb.zone_id 
+}
+
 resource "aws_cloudfront_distribution" "web_cdn" {
   origin {
     domain_name = aws_lb.web_alb.dns_name
@@ -18,7 +42,7 @@ resource "aws_cloudfront_distribution" "web_cdn" {
     custom_origin_config {
       http_port                = "80"
       https_port               = "443"
-      origin_protocol_policy   = "http-only"
+      origin_protocol_policy   = "match-viewer"
       origin_ssl_protocols     = ["TLSv1.1", "TLSv1.2"]
       origin_keepalive_timeout = 60
       origin_read_timeout      = 60
@@ -30,7 +54,7 @@ resource "aws_cloudfront_distribution" "web_cdn" {
   comment             = "Toptal CDN"
   default_root_object = ""
 
-  aliases = []
+  aliases = ["www.${var.r53_domain_name}",var.r53_domain_name]
 
   logging_config {
     include_cookies = false
@@ -53,7 +77,7 @@ resource "aws_cloudfront_distribution" "web_cdn" {
       }
     }
 
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
@@ -69,7 +93,8 @@ resource "aws_cloudfront_distribution" "web_cdn" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    ssl_support_method = "sni-only"
+    acm_certificate_arn = var.acm_certificate_arn
   }
 }
 

@@ -24,7 +24,7 @@ variable "region" {
 
 #CI/CD pipeline variables
 variable "github_token" {
-  default = "51e701fb9ba45dd02be789c1ff0938a73abd4102"
+  default = "9ecd9a2d510a52575e25202513f33e743a497e15"
   description = "Github token which will be used for build"
 }
 
